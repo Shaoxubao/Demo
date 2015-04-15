@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stu.dao.StudentDao">
+
+	<resultMap type="com.stu.model.Student" id="studentResultMap">
+		<id property="studentID" column="STU_ID"/>
+		<result property="studentName" column="STU_NAME"/>
+		<result property="studentSex" column="STU_SEX"/>
+		<result property="studentBirthday" column="STU_BIRTHDAY"/>
+	</resultMap>
+	
+	<!-- 查询学生，根据id -->
+	<select id="getStudent" parameterType="String" resultType="com.stu.model.Student"
+	 resultMap="studentResultMap">
+			SELECT * from student ST
+				WHERE ST.STU_ID = #{studentID} 
+	</select>
+	
+	<!-- 查询学生列表 -->
+	<select id="getStudentByCriteria"  parameterType="com.stu.model.Student"
+	resultMap="studentResultMap">
+			SELECT * from student ST
+			<where>
+				<if test="studentID != null ">
+		    		and ST.STU_ID = #{studentID}
+		   		</if>
+		   		<if test="studentName != null ">
+		    		and ST.STU_NAME = #{studentName}
+		   		</if>
+			</where>
+	</select>
+	
+	<!-- 插入学生 -->
+	<insert id="insertStudent" useGeneratedKeys="true" parameterType="com.stu.model.Student">
+		insert into student(
+							STU_ID,
+							STU_NAME,
+							STU_SEX,
+							STU_BIRTHDAY
+							)values(
+							#{studentID},
+							#{studentName},
+							#{studentSex},
+							#{studentBirthday}
+							)
+	</insert>
+	
+	<!-- 删除学生 -->
+	<delete id="deleteStudent" parameterType="com.stu.model.Student">
+		delete from student WHERE STU_ID = #{studentID}
+	</delete>
+	
+	<!-- 更新学生信息 -->  
+	<update id="updataStudent" parameterType="com.stu.model.Student">  
+         update student       
+         <trim prefix="SET" suffixOverrides=",">
+			<if test="studentName!=null">STU_NAME=#{studentName},</if>
+			<if test="studentSex!=null">STU_SEX=#{studentSex},</if>
+			<if test="studentBirthday!=null">STU_BIRTHDAY=#{studentBirthday},</if>
+		</trim>      
+         WHERE student.STU_ID = #{studentID};     
+	</update>  
+	
+</mapper>
